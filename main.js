@@ -1,3 +1,15 @@
+//Nodes
+const choiceButtons = document.querySelectorAll('.choices button');
+const scores = document.querySelector('.scores span');
+
+//Scores
+let totalGames = 0;
+let wins = 0;
+let losses = 0;
+let ties = 0;
+
+
+//String Arrays
 const choiceArray = ["Rock", "Paper", "Scissors"];
 const Choices = new Map([
     ["ROCK", 0],
@@ -12,10 +24,10 @@ const TIE = 0;
 const WIN = 1;
 const LOSS = 2;
 
-const ResultTexts = ["Tie!", "You win!", "You lose!"];
-const VictoryConditions = ["Rock breaks scissors.", "Paper covers rock.", "Scissors cuts paper."];
-const LosingConditions = [VictoryConditions[PAPER], VictoryConditions[SCISSORS], VictoryConditions[ROCK]];
 
+function getScoreString(){
+    return "W: " + wins + "  L: " + losses + "  Ties: " + ties + "  Total: " + totalGames;
+}
 
 function getComputerChoice() {
     return Math.floor((Math.random() * 10) / (10/3));
@@ -39,46 +51,34 @@ function getRoundResult(playerSelection) { //This method counts on the playerSel
     return result;    
 }
 
-function game(numOfRounds) {
-    let wins = 0;
-
-    for(let i = 0; i < numOfRounds; i++){
-        let playerSelectionRaw = prompt("Rock, paper, or scissors?");
-        let playerSelection = Choices.get(playerSelectionRaw.toUpperCase());
-        let results = getRoundResult(playerSelection);
-        let resultText = ResultTexts[results];
-        let condition;
-
-        switch(results) {
-            case TIE:
-                condition = "You both picked " + choiceArray[playerSelection] + ".";
-                break;
-            case WIN:
-                condition = VictoryConditions[playerSelection];
-                break;
-            case LOSS:
-                condition = LosingConditions[playerSelection];
-                break;
-            default:
-                console.error("ERROR: Results were outside of scope of win, loss, or tie.")
-        }
-        
-        console.log(resultText + " " + condition);
-        wins += results === LOSS ? -1 : results;
+function game(clickEvent) {
+    let playerSelectionRaw = clickEvent.target.className.toUpperCase();
+    let playerSelection = Choices.get(playerSelectionRaw);
+    let results = getRoundResult(playerSelection);
+    totalGames += 1;
+    switch(results) {
+        case TIE:
+            ties += 1;
+            break;
+        case WIN:
+            wins += 1;
+            break;
+        case LOSS:
+            losses += 1;
+            break;
+        default:
+            console.error("ERROR: Results were outside of scope of win, loss, or tie.")
     }
 
-    if(wins > 0) console.log("You won the game!");
-    else if(wins === 0) console.log("You tied wins and losses.");
-    else console.log("Sorry. You lost the game.");
-
-
-    //DOM changes
-
+    if(wins >= 5) scores.innerHTML = "You WIN!!!";
+    else if(losses >= 5) scores.innerHTML = 'You lose'
+    else scores.innerHTML = getScoreString();
 }
+
+
+
 
  
 
-const choiceButtons = document.querySelectorAll('.choices button');
-
-choiceButtons.forEach(button => button.addEventListener('click', e => console.log(e.target.className)));
+choiceButtons.forEach(button => button.addEventListener('click', e => game(e)));
 
