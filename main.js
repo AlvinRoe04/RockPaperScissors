@@ -70,4 +70,15 @@ function game(numOfRounds) {
     if(wins > 0) console.log("You won the game!");
     else if(wins === 0) console.log("You tied wins and losses.");
     else console.log("Sorry. You lost the game.");
+
+
+    //DOM changes
+
 }
+
+ 
+
+const choiceButtons = document.querySelectorAll('.choices button');
+
+choiceButtons.forEach(button => button.addEventListener('click', e => console.log(e.target.className)));
+
